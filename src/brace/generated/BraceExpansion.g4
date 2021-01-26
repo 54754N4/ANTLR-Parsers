@@ -1,28 +1,25 @@
 grammar BraceExpansion;
 
-/*
+/**/
 @header
 {
-	package brace.generated;
+package brace.generated;
 }
-*/
+
 
 input : expansion ;
 
-expansion : preamble '{' statement '}' postscript ;
+expansion : preamble LCURLY (csv|range) RCURLY postscript ;
 
-statement : any (COMMA any)* 					 # CSV
-	| (CHAR|INT) RANGE (CHAR|INT) (RANGE INT)?   # Range
+csv : postscript (COMMA postscript)+ ;
+
+range : (CHAR|INT) RANGE (CHAR|INT) (RANGE INT)? ;
+
+postscript : expansion
+	| preamble
 	;
 
 preamble : WORD
-	| INT
-	| CHAR
-	|
-	;
-postscript : any ;
-any : expansion
-	| WORD
 	| INT
 	| CHAR
 	|
@@ -35,4 +32,4 @@ COMMA : ',' ;
 
 INT : '0'* [0-9]+ ;
 CHAR : [a-zA-Z0-9] ;
-WORD : ~[{]~[{},.]+ ;
+WORD : ~[0-9{}.,]~[{}.,]+ ;

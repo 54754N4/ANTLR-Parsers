@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import brace.generated.BraceExpansionBaseVisitor;
 import brace.generated.BraceExpansionLexer;
 import brace.generated.BraceExpansionParser;
-import brace.generated.BraceExpansionParser.AnyContext;
-import brace.generated.BraceExpansionParser.CSVContext;
+import brace.generated.BraceExpansionParser.CsvContext;
 import brace.generated.BraceExpansionParser.ExpansionContext;
 import brace.generated.BraceExpansionParser.PostscriptContext;
 import brace.generated.BraceExpansionParser.PreambleContext;
@@ -21,11 +21,12 @@ import lib.Antlr;
 
 public class BraceExpansion extends BraceExpansionBaseVisitor<List<String>> {
 
-	// expansion : preamble '{' statement '}' postscript ;
+	// expansion : preamble '{' (csv|range) '}' postscript ;
 	@Override
 	public List<String> visitExpansion(ExpansionContext ctx) {
+		ParseTree node = ctx.csv() != null ? ctx.csv() : ctx.range();
 		List<String> preamble = visit(ctx.preamble()),	// by design, preamble returns a list of 1 element or 0
-				statement = visit(ctx.statement()),
+				statement = visit(node),
 				postscript = visit(ctx.postscript()),
 				results = new ArrayList<>();
 		String prefix = preamble.size() > 0 ? preamble.get(0) : "";
@@ -36,17 +37,17 @@ public class BraceExpansion extends BraceExpansionBaseVisitor<List<String>> {
 		return results;
 	}
 
-	// any (COMMA any)* 					 # CSV
+	// csv : postscript (COMMA postscript)+ ;
 	@Override 
-	public List<String> visitCSV(CSVContext ctx) { 
-		return ctx.any()
+	public List<String> visitCsv(CsvContext ctx) { 
+		return ctx.postscript()
 				.stream()
 				.map(this::visit)
 				.flatMap(Collection::stream)
 				.collect(Collectors.toList());
 	}
 
-	// (CHAR|INT) RANGE (CHAR|INT) (RANGE INT)?   # Range
+	// range : (CHAR|INT) RANGE (CHAR|INT) (RANGE INT)? ;
 	@Override 
 	public List<String> visitRange(RangeContext ctx) {
 		if (ctx.CHAR(0) != null) {
@@ -88,30 +89,14 @@ public class BraceExpansion extends BraceExpansionBaseVisitor<List<String>> {
 			return new ArrayList<>();
 	}
 	
-	/* postscript : any ; */
+	/* postscript : expansion
+		| preamble
+		; 						*/
 	@Override
 	public List<String> visitPostscript(PostscriptContext ctx) {
-		return visit(ctx.any());
-	}
-
-	/* any : expansion
-		| WORD
-		| INT
-		| CHAR
-		|
-		;				*/
-	@Override
-	public List<String> visitAny(AnyContext ctx) {
-		if (ctx.expansion() != null)
-			return visit(ctx.expansion());
-		else if (ctx.WORD() != null)
-			return Arrays.asList(ctx.WORD().getText());
-		else if (ctx.INT() != null)
-			return Arrays.asList(ctx.INT().getText());
-		else if (ctx.CHAR() != null)
-			return Arrays.asList(ctx.CHAR().getText());
-		else // empty list == nothing
-			return new ArrayList<>();
+		return visit(ctx.expansion() != null ? 
+				ctx.expansion() : 
+				ctx.preamble());
 	}
 	
 	public static List<String> charRange(char xi, char xf) {
@@ -150,7 +135,7 @@ public class BraceExpansion extends BraceExpansionBaseVisitor<List<String>> {
 //		System.out.println(pad("01", -1));
 //		System.out.println(Arrays.toString(intRange(10,0,1,4,true).toArray()));
 		List<String> result = Antlr.visit(
-				() -> CharStreams.fromString("1{{A..Z},{a..z}}2"),  // {A..Z}{0..9}   // {01..10}
+				() -> CharStreams.fromString("1{01..10}0"),  // {A..Z}{0..9}   // 1{01..10}0	// 1{{A..Z},{a..z}}2
 				BraceExpansionLexer.class,
 				BraceExpansionParser.class,
 				BraceExpansionParser::input,

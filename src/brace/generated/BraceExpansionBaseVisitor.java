@@ -1,5 +1,7 @@
-package brace.generated;
 // Generated from .\BraceExpansion.g4 by ANTLR 4.9.1
+
+package brace.generated;
+
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -31,7 +33,7 @@ public class BraceExpansionBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCSV(BraceExpansionParser.CSVContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCsv(BraceExpansionParser.CsvContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -45,13 +47,6 @@ public class BraceExpansionBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPreamble(BraceExpansionParser.PreambleContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitPostscript(BraceExpansionParser.PostscriptContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -59,5 +54,5 @@ public class BraceExpansionBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAny(BraceExpansionParser.AnyContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPreamble(BraceExpansionParser.PreambleContext ctx) { return visitChildren(ctx); }
 }

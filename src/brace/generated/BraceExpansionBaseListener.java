@@ -1,5 +1,7 @@
-package brace.generated;
 // Generated from .\BraceExpansion.g4 by ANTLR 4.9.1
+
+package brace.generated;
+
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -40,13 +42,13 @@ public class BraceExpansionBaseListener implements BraceExpansionListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCSV(BraceExpansionParser.CSVContext ctx) { }
+	@Override public void enterCsv(BraceExpansionParser.CsvContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCSV(BraceExpansionParser.CSVContext ctx) { }
+	@Override public void exitCsv(BraceExpansionParser.CsvContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -64,18 +66,6 @@ public class BraceExpansionBaseListener implements BraceExpansionListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPreamble(BraceExpansionParser.PreambleContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPreamble(BraceExpansionParser.PreambleContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPostscript(BraceExpansionParser.PostscriptContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -88,13 +78,13 @@ public class BraceExpansionBaseListener implements BraceExpansionListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAny(BraceExpansionParser.AnyContext ctx) { }
+	@Override public void enterPreamble(BraceExpansionParser.PreambleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAny(BraceExpansionParser.AnyContext ctx) { }
+	@Override public void exitPreamble(BraceExpansionParser.PreambleContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -1,5 +1,7 @@
-package brace.generated;
 // Generated from .\BraceExpansion.g4 by ANTLR 4.9.1
+
+package brace.generated;
+
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -23,25 +25,17 @@ public interface BraceExpansionVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpansion(BraceExpansionParser.ExpansionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code CSV}
-	 * labeled alternative in {@link BraceExpansionParser#statement}.
+	 * Visit a parse tree produced by {@link BraceExpansionParser#csv}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCSV(BraceExpansionParser.CSVContext ctx);
+	T visitCsv(BraceExpansionParser.CsvContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Range}
-	 * labeled alternative in {@link BraceExpansionParser#statement}.
+	 * Visit a parse tree produced by {@link BraceExpansionParser#range}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRange(BraceExpansionParser.RangeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link BraceExpansionParser#preamble}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPreamble(BraceExpansionParser.PreambleContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link BraceExpansionParser#postscript}.
 	 * @param ctx the parse tree
@@ -49,9 +43,9 @@ public interface BraceExpansionVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPostscript(BraceExpansionParser.PostscriptContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link BraceExpansionParser#any}.
+	 * Visit a parse tree produced by {@link BraceExpansionParser#preamble}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAny(BraceExpansionParser.AnyContext ctx);
+	T visitPreamble(BraceExpansionParser.PreambleContext ctx);
 }

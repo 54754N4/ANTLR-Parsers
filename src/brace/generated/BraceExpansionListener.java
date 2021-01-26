@@ -1,5 +1,7 @@
-package brace.generated;
 // Generated from .\BraceExpansion.g4 by ANTLR 4.9.1
+
+package brace.generated;
+
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -28,39 +30,25 @@ public interface BraceExpansionListener extends ParseTreeListener {
 	 */
 	void exitExpansion(BraceExpansionParser.ExpansionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code CSV}
-	 * labeled alternative in {@link BraceExpansionParser#statement}.
+	 * Enter a parse tree produced by {@link BraceExpansionParser#csv}.
 	 * @param ctx the parse tree
 	 */
-	void enterCSV(BraceExpansionParser.CSVContext ctx);
+	void enterCsv(BraceExpansionParser.CsvContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code CSV}
-	 * labeled alternative in {@link BraceExpansionParser#statement}.
+	 * Exit a parse tree produced by {@link BraceExpansionParser#csv}.
 	 * @param ctx the parse tree
 	 */
-	void exitCSV(BraceExpansionParser.CSVContext ctx);
+	void exitCsv(BraceExpansionParser.CsvContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Range}
-	 * labeled alternative in {@link BraceExpansionParser#statement}.
+	 * Enter a parse tree produced by {@link BraceExpansionParser#range}.
 	 * @param ctx the parse tree
 	 */
 	void enterRange(BraceExpansionParser.RangeContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Range}
-	 * labeled alternative in {@link BraceExpansionParser#statement}.
+	 * Exit a parse tree produced by {@link BraceExpansionParser#range}.
 	 * @param ctx the parse tree
 	 */
 	void exitRange(BraceExpansionParser.RangeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link BraceExpansionParser#preamble}.
-	 * @param ctx the parse tree
-	 */
-	void enterPreamble(BraceExpansionParser.PreambleContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BraceExpansionParser#preamble}.
-	 * @param ctx the parse tree
-	 */
-	void exitPreamble(BraceExpansionParser.PreambleContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link BraceExpansionParser#postscript}.
 	 * @param ctx the parse tree
@@ -72,13 +60,13 @@ public interface BraceExpansionListener extends ParseTreeListener {
 	 */
 	void exitPostscript(BraceExpansionParser.PostscriptContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link BraceExpansionParser#any}.
+	 * Enter a parse tree produced by {@link BraceExpansionParser#preamble}.
 	 * @param ctx the parse tree
 	 */
-	void enterAny(BraceExpansionParser.AnyContext ctx);
+	void enterPreamble(BraceExpansionParser.PreambleContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link BraceExpansionParser#any}.
+	 * Exit a parse tree produced by {@link BraceExpansionParser#preamble}.
 	 * @param ctx the parse tree
 	 */
-	void exitAny(BraceExpansionParser.AnyContext ctx);
+	void exitPreamble(BraceExpansionParser.PreambleContext ctx);
 }

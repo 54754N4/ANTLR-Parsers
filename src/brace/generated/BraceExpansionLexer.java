@@ -1,5 +1,7 @@
-package brace.generated;
 // Generated from .\BraceExpansion.g4 by ANTLR 4.9.1
+
+package brace.generated;
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
