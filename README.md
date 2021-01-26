@@ -1,7 +1,8 @@
 # ANTLR-Parsers
 
-|Target|Lexer|Parser|Interpreter
-|----|----|
+
+|Target|Lexer|Parser|Interpreter|
+|----|----|----|----|
 |Brace expansion|DONE|DONE|DONE|
 |Arithmetic expressions|DONE|90%|50%|
 |CSV files|DONE|DONE|DONE|
