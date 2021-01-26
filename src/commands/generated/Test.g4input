@@ -1,0 +1,1 @@
+sleep | echo -n -oe --boob --boob1=test --boob2="test1 test2" | boobsu -new --param --param="\"boobs\"\n" < echo boobs

@@ -1,0 +1,206 @@
+echo -e "\nRemoving \t backslash \t characters\n"
+
+# I'm just a comment
+
+# Lonely command
+echo hello -n -p
+
+# Simple assignments
+((area=5*5))
+valid=true
+
+# Weird indentations + while loop
+count=1
+val=$((1+2))
+while [ $valid ]
+do
+echo $count
+if [ $count -eq 5 ]
+then
+break
+fi
+((count++))
+done
+
+# For loop basic word list
+for i in 1 2 3 4 5
+do
+   echo "Welcome $i times"
+done
+
+# Arithmetic for loop
+for (( c=1; c<=5; c++ ))
+do  
+   echo "Welcome $c times"
+done
+
+# Infinite loop
+for ((;;))
+do
+   echo "infinite loops [ hit CTRL+C to stop]"
+done
+
+# Big for loop
+for file in /etc/*
+do
+	if [ "${file}" == "/etc/resolv.conf" ]
+	then
+		countNameservers=$(grep -c nameserver /etc/resolv.conf)
+		echo "Total  ${countNameservers} nameservers defined in ${file}"
+		break
+	fi
+done
+
+# Brace expansion for loop
+for i in 0{1..4}
+do
+    h="cbz${i}"
+    ping -c 1 -q "$h" &>/dev/null
+    if [ $? -eq 0 ]
+    then
+        echo "server $h alive" 
+    else
+        echo "server $h dead or can not ping."
+    fi
+done
+
+# Branch if/elif/else statements
+if [ $? -eq 0 ]
+then
+    echo "server $h alive" 
+elif [ $? -eq 2 ]
+then
+	bullshit -n "some text"
+elif [ $? -eq 4]; then
+	exit
+else
+    echo "server $h dead or can not ping."
+fi
+
+# Switch statement
+echo -n "Enter the name of a country: "
+read COUNTRY
+echo -n "The official language of $COUNTRY is "
+
+case $COUNTRY in
+
+  Lithuania)
+    echo -n "Lithuanian"
+    ;;
+
+  Romania | Moldova)
+    echo -n "Romanian"
+    ;;
+
+  Italy | "San Marino" | Switzerland | "Vatican City")
+    echo -n "Italian"
+    ;;
+
+  *)
+    echo -n "unknown"
+    ;;
+esac
+
+# Until statement
+counter=0
+until [ $counter -gt 5 ]
+do
+  echo Counter: $counter
+  ((counter++))
+done
+
+# Until command exit status
+until git pull &> /dev/null
+do
+    echo "Waiting for the git host ..."
+    sleep 1
+done
+
+# Select statement
+echo "Which Operating System do you like?"
+select os in Ubuntu LinuxMint Windows8 Windows7 WindowsXP
+do
+	case $os in
+		"Ubuntu"|"LinuxMint")
+			echo "I also use $os."
+			;;
+		"Windows8" | "Windows10" | "WindowsXP")
+			echo "Why don't you try Linux?"
+			;;
+		*)
+			echo "Invalid entry."
+			break
+			;;
+	esac
+done
+
+# Subshell
+
+(
+# Inside parentheses, and therefore a subshell . . .
+while [ 1 ]
+do
+  echo "Subshell running . . ."
+done
+)
+
+# Command group (separate subshell)
+(echo "hello world";echo "I will execute in the background")
+
+(
+	echo "I dont need"
+	echo "semicolons anymore"
+)
+
+# Command group (current process - final ';' is mandatory here)
+{echo "Current lag is : ";ping localhost;}
+
+{
+	echo "I don't require"
+	echo "a final semicolon anymore"
+}
+
+# Test functions
+function bocker_check() {
+	btrfs subvolume list "$btrfs_path" | grep -qw "$1" && echo 0 || echo 1
+}
+
+# Test coproc
+
+coproc (echo babe)
+
+# Extra checks here #####################
+
+echo "Enter username"
+read username
+echo "Enter password"
+read password
+
+if [[ ( $username == "admin" && $password == "secret" ) ]]
+then
+	echo "valid user"
+else
+	echo "invalid user"
+fi
+
+for arg in "$@"
+do
+	index=$(echo $arg | cut -f1 -d=)
+	val=$(echo $arg | cut -f2 -d=)
+	case $index in
+		X) x=$val;;
+		Y) y=$val;;
+		*)
+	esac
+done
+((result=x+y))
+echo "X+Y=$result"
+
+# Brace expansion
+
+{123..129}
+{a,b,c,de}
+a{12..24..3}p
+d{a,b,c}e
+{a,b,c}{a,b}
+pre{{0..10..2}, {a..z}}.txt

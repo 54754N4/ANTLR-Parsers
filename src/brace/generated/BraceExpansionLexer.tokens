@@ -1,0 +1,11 @@
+LCURLY=1
+RCURLY=2
+RANGE=3
+COMMA=4
+INT=5
+CHAR=6
+WORD=7
+'{'=1
+'}'=2
+'..'=3
+','=4
