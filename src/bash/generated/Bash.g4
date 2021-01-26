@@ -5,11 +5,10 @@
  */
 grammar Bash;
 
-/*
+/**/
 @header{
 package bash.generated;
 }
-*/
 
 inputunit:  simple_list (simple_list_terminator simple_list)* EOF ;
  
