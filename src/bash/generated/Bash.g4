@@ -10,6 +10,7 @@ grammar Bash;
 package bash.generated;
 }
 
+
 inputunit:  simple_list (simple_list_terminator simple_list)* EOF ;
  
 word_list:  WORD
@@ -329,34 +330,35 @@ fragment ESC : '\\' [btnr"\\] ; 		// \b, \t, \n etc...
 fragment STRING : QUOTES (ESC|.)*? QUOTES ;
 fragment DIGIT : [0-9] ;
 fragment CHAR : [a-zA-Z] ;
-fragment EXPANSION : '$((' ~[)]* '))'   // if '((' then finish with '))'
-	| '$(' ~[()]* ')' 					// otherwise until matching ')'
-	| '$' ~[ \t\r\n;"()]*				// variables/expansions etc
-	| '*' ~[ \t\r\n;")]*				// globs, ) to not consume case-clauses
+fragment EXPANSION : BRACE_EXPANSION
+    | '$((' ~[)]* '))'                  // arithmetic expansion
+	| '$(' ~[()]* ')' 					// command substitution
+	| '$' ~[ \t\r\n;"()]*				// parameter expansion
+	| '*' ~[ \t\r\n;")]*				// Pathname Expansion
 	;
 
 WORD : DIGIT
     | CHAR 
     | STRING 
     | EXPANSION
-    | INITIAL_PREAMBLE? BRACE_EXPANSION INITIAL_POSTSCRIPT?
     | [a-zA-Z0-9/\-.]~[ \t\r\n;()"]+
     ;
 
 /* > Brace expansions
  * Allows us to recognize complete brace expansions and return
- * them as a single token, so that a specific parser can convert
+ * them as a single token, so that another parser can convert
  * accordingly. Hence in our case, we only need to recognize 
  * brace expansions during the lexing phase.
  */
-fragment BRACE_EXPANSION : LCURLY (RANGE|CSV) RCURLY ;
-fragment INITIAL_PREAMBLE : ~[ {};\t\r\n]+ ;    // no spaces outside of {} allowed
+fragment BRACE_EXPANSION : INITIAL_PREAMBLE? INNER_BRACE_EXPANSION INITIAL_POSTSCRIPT? ;
+fragment INITIAL_PREAMBLE : ~[ {};\t\r\n]+ ;    // no spaces outside of first {} allowed
 fragment INITIAL_POSTSCRIPT : ~[ #\t\r\n]+ ;
+fragment INNER_BRACE_EXPANSION : LCURLY (RANGE|CSV) RCURLY ;
 fragment RANGE : (NUMBER|DIGIT|CHAR) '..' (NUMBER|DIGIT|CHAR) ('..' (NUMBER|DIGIT))? ;
 fragment CSV : PREAMBLE (',' CSV)+ 
     | POSTSCRIPT
     ;
-fragment PREAMBLE : (CHAR|DIGIT|~[{}\r\n])+ ;   // nested ones allow spaces
-fragment POSTSCRIPT : PREAMBLE? BRACE_EXPANSION POSTSCRIPT?
+fragment PREAMBLE : (CHAR|DIGIT|~[{}\r\n])+ ;   // nested preamble/words allow spaces
+fragment POSTSCRIPT : PREAMBLE? INNER_BRACE_EXPANSION POSTSCRIPT?
     | ~[,{};\n\r]+
     ;
