@@ -5,11 +5,11 @@
  */
 grammar Bash;
 
-/**/
+/*
 @header{
 package bash.generated;
 }
-
+*/
 
 inputunit:  simple_list (simple_list_terminator simple_list)* EOF ;
  
@@ -66,6 +66,8 @@ redirection:    '>' WORD
     ;
  
 simple_command_element: WORD
+    |   ARITH_CMD
+    |   COND_CMD
     |   ASSIGNMENT_WORD
     |   NUMBER
     |   redirection
@@ -300,6 +302,7 @@ BAR_AND : '|&' ;
 BANG : '!' ;
 TIME : 'time' ;
 ASSIGN : '=' ;
+QUOTE : '\'' ;
 QUOTES : '"' ;
 //TIMEOPT : '-p' ;  // better to be implemented in code instead
 //TIMEIGN : '--' ;
@@ -326,25 +329,47 @@ NUMBER : DIGIT+ ;
 REDIR_WORD : DIGIT+ ;
 ASSIGNMENT_WORD : [a-zA-Z0-9/\-.]~[ \t\r\n;()"]+ ASSIGN WORD ;
 
-fragment ESC : '\\' [btnr"\\] ; 		// \b, \t, \n etc...
-fragment STRING : QUOTES (ESC|.)*? QUOTES ;
 fragment DIGIT : [0-9] ;
 fragment CHAR : [a-zA-Z] ;
+fragment ESC : '\\' [ abtrnf"\\$!] ; 		     // \b, \t, \n etc...
+fragment ESC_RESTRICTED : '\\' [abtrnf'\\] ; 
+fragment STRING : QUOTES (ESC|.)*? QUOTES ;
+fragment ESCAPED_STRING : QUOTE (ESC_RESTRICTED|.)*? QUOTE ;
+fragment NESTED_PAREN : '(' NESTED_PAREN ')' 
+    | ~[()]*?
+    ;
 fragment EXPANSION : BRACE_EXPANSION
-    | '$((' ~[)]* '))'                  // arithmetic expansion
-	| '$(' ~[()]* ')' 					// command substitution
-	| '$' ~[ \t\r\n;"()]*				// parameter expansion
-	| '*' ~[ \t\r\n;")]*				// Pathname Expansion
+    | TILDE_EXPANSION
+    | PARAM_EXPANSION
+    | CMD_SUBSTITUTION
+    | ARITH_CMD                        // arithmetic expansion
+	| '*' ~[ \t\r\n;")]*               // pathname expansion
 	;
 
 WORD : DIGIT
-    | CHAR 
-    | STRING 
+    | CHAR
+    | STRING
+    | ESCAPED_STRING                    // all expansions suppressed
     | EXPANSION
     | [a-zA-Z0-9/\-.]~[ \t\r\n;()"]+
     ;
 
-/* > Brace expansions
+/* Tilde expansion */
+fragment TILDE_EXPANSION : '~' [+-]? (DIGIT|NUMBER)   // dirs +-N
+    | '~' [+-]? ([a-zA-Z_/*.]+ | STRING)*             // specific path
+    ;
+
+/* Parameter expansion */
+fragment PARAM_EXPANSION : '${' ('\\}'|~[}])+ '}'      
+    | '$' ~[ \t\r\n;")]*
+    ;
+
+/* Command substitution */
+fragment CMD_SUBSTITUTION : '$(' ~[()]+ ')'
+    | '`' ('\\`'|~[`])+ '`'
+    ;
+
+/* Brace expansions
  * Allows us to recognize complete brace expansions and return
  * them as a single token, so that another parser can convert
  * accordingly. Hence in our case, we only need to recognize 

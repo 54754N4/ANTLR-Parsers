@@ -1,8 +1,5 @@
 // Generated from .\Bash.g4 by ANTLR 4.9.1
 
-package bash.generated;
-
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;

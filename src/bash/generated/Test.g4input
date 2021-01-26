@@ -204,3 +204,22 @@ a{12..24..3}p 				# pre/post range + inc
 d{a,b,c}e 					# pre/post csv
 {a,b,c}{a,b} 				# combined
 pre{{0..10..2}, {a..z}}.txt # pre/post nested
+
+# Tilde expansion
+
+~
+~/foo
+~+/foo
+~-/foo
+~1
+~20
+~+22
+~-40
+~/"i am a space-separated-path"/bullshit
+
+# Different expansion suppresions
+
+echo text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER      # None suppressed
+echo "text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER"    # path/tilde/brace/split suppressed
+echo 'text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER'    # all suppressed
+
