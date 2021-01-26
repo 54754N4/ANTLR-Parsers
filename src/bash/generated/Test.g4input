@@ -198,9 +198,9 @@ echo "X+Y=$result"
 
 # Brace expansion
 
-{123..129}
-{a,b,c,de}
-a{12..24..3}p
-d{a,b,c}e
-{a,b,c}{a,b}
-pre{{0..10..2}, {a..z}}.txt
+{123..129}   				# int range
+{a,b,c,de}					# csv
+a{12..24..3}p 				# pre/post range + inc
+d{a,b,c}e 					# pre/post csv
+{a,b,c}{a,b} 				# combined
+pre{{0..10..2}, {a..z}}.txt # pre/post nested

@@ -258,9 +258,6 @@ timespec:   TIME
 //    |   TIME '-p' '--'
     ;
 
-LINE_COMMENT : '#' ~('\r'|'\n')* NEWLINE -> skip ;
-MULTILINE_COMMENT : ': \'' NEWLINE .*? '\'' NEWLINE -> skip ;
-
 LCURLY : '{' ;
 RCURLY : '}' ;
 GREATER_GREATER : '>>' ;
@@ -304,13 +301,22 @@ BANG : '!' ;
 TIME : 'time' ;
 ASSIGN : '=' ;
 QUOTES : '"' ;
+//TIMEOPT : '-p' ;  // better to be implemented in code instead
+//TIMEIGN : '--' ;
 
 WS : [ \t]+ -> skip ;
 NEWLINE : '\r'? '\n' ;
 
-//TIMEOPT : 
-//TIMEIGN : 
+LINE_COMMENT : '#' ~('\r'|'\n')* -> skip ;
+MULTILINE_COMMENT : MULTILINE_START NEWLINE .*? MULTILINE_END -> skip ;
+fragment MULTILINE_START : ': \'' ;
+fragment MULTILINE_END : '\'\n' ;
 
+/* This is also how the official yacc translates to tokens.
+ * However, the specific lexer rules were reverse engineered
+ * based on the usage syntax and might be inaccurate since I 
+ * couldn't find actual patterns inside the source.
+ */
 ARITH_CMD : '$'? ARITH_START ~[;)]+ ARITH_END ;	 						// (( arithmetics ))
 ARITH_FOR_EXPRS : ARITH_START ~[;)]* ';' ~[;)]* ';' ~[)]* ARITH_END ; 	// (( initialise;check;increment )) 
 COND_CMD :  COND_START COND_START ~[\]]* COND_END COND_END				// [[ condition ]]
@@ -324,10 +330,8 @@ fragment ESC : '\\' [btnr"\\] ; 		// \b, \t, \n etc...
 fragment STRING : QUOTES (ESC|.)*? QUOTES ;
 fragment DIGIT : [0-9] ;
 fragment CHAR : [a-zA-Z] ;
-fragment EXPANSION :
-//  | BRACE_EXPANSION
-    | '$((' ~[)]* '))'
-	| '$(' ~[()]* ')' 					// consume until matching ')'
+fragment EXPANSION : '$((' ~[)]* '))'   // if '((' then finish with '))'
+	| '$(' ~[()]* ')' 					// otherwise until matching ')'
 	| '$' ~[ \t\r\n;"()]*				// variables/expansions etc
 	| '*' ~[ \t\r\n;")]*				// globs, ) to not consume case-clauses
 	;
@@ -336,17 +340,24 @@ WORD : DIGIT
     | CHAR 
     | STRING 
     | EXPANSION
-    | BRACE_EXPANSION
+    | INITIAL_PREAMBLE? BRACE_EXPANSION INITIAL_POSTSCRIPT?
     | [a-zA-Z0-9/\-.]~[ \t\r\n;()"]+
     ;
 
-// Brace expansion
-fragment BRACE_EXPANSION : PREAMBLE? LCURLY (RANGE|CSV) RCURLY POSTSCRIPT? ;
-fragment PREAMBLE : (ESC|CHAR|DIGIT)+ ;
+/* > Brace expansions
+ * Allows us to recognize complete brace expansions and return
+ * them as a single token, so that a specific parser can convert
+ * accordingly. Hence in our case, we only need to recognize 
+ * brace expansions during the lexing phase.
+ */
+fragment BRACE_EXPANSION : LCURLY (RANGE|CSV) RCURLY ;
+fragment INITIAL_PREAMBLE : ~[ {};\t\r\n]+ ;    // no spaces outside of {} allowed
+fragment INITIAL_POSTSCRIPT : ~[ #\t\r\n]+ ;
 fragment RANGE : (NUMBER|DIGIT|CHAR) '..' (NUMBER|DIGIT|CHAR) ('..' (NUMBER|DIGIT))? ;
 fragment CSV : PREAMBLE (',' CSV)+ 
     | POSTSCRIPT
     ;
-fragment POSTSCRIPT : BRACE_EXPANSION
-    | ~[,{}\n\r]+
+fragment PREAMBLE : (CHAR|DIGIT|~[{}\r\n])+ ;   // nested ones allow spaces
+fragment POSTSCRIPT : PREAMBLE? BRACE_EXPANSION POSTSCRIPT?
+    | ~[,{};\n\r]+
     ;
